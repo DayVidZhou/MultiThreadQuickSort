@@ -69,10 +69,9 @@ int partition(array_interval_t* interval){
 }
 
 
-
 void bubble( array_interval_t* interval ) {
    int temp;
-   int i,j;
+   int i,j,k;
 	 bool swapped = false;
    
    // loop through all numbers 
@@ -102,10 +101,14 @@ void bubble( array_interval_t* interval ) {
 
       // if no number was swapped that means 
       //   array is sorted now, break the loop. 
+// 			printf("SOLVED Array is ");
+// 			for (k = interval->a; i <= interval->c; i++){
+// 				printf("%d , ",interval->array.array[i]);
+// 			}
+// 			printf("\n");
       if(!swapped) {
          break;
-      }
-      
+      }  
     //  printf("Iteration %d#: ",(i+1)); 
    }
 }
@@ -118,30 +121,35 @@ __task void quick_sort_task( void* void_ptr){
 	
  	int pivotindex = partition(&p_array);
  	int priority = task_param->priority;
-	
-	printf("The pivot is %d \n",pivotindex);
-	printf("The array is ");
-	
-	
-	
-	//setting left and right
+	int i;
+	//initialize left and right
 	array_interval_t right;	
 	array_interval_t left;
+	
+// 	printf("The pivot index is %d \n",pivotindex);
+// 	printf("Array is ");
+// 	for (i = p_array.a; i <= p_array.c; i++){
+// 		printf("%d , ",p_array.array.array[i]);
+// 	}
+// 	printf("\n");
+	
 	//setting left
 	left.array.array = p_array.array.array;
 	left.a = 0;
 	left.c = pivotindex -1;
 	//setting right
-	right.array.array = p_array.array.array+pivotindex+1;
+	right.array.array = p_array.array.array;
 	right.a = pivotindex +1;
 	right.c = p_array.c;
 	
 	//run bubble if list is under a certain size
-	if ((left.c - left.a)<10){
+	if (pivotindex != 0 && (left.c - left.a)<10){
+	//	printf (" LEFT BUBBLE RAN ");
+	//	printf (" LEFT SIDE a is %d and c is %d ", left.a,left.c);
 		bubble(&left);
 	}
 	//if list is larger than 10 run create the new task
-	else{
+	else if (pivotindex != 0){
 		qsort_task_parameters_t left_task;
 		left_task.interval = left;
 		left_task.priority = priority + 1;
@@ -149,11 +157,13 @@ __task void quick_sort_task( void* void_ptr){
 	}
 	
 	//run bubble if list is under a certain size
-	if ((right.c - right.a)<10){
+	if (pivotindex != p_array.c &&(right.c - right.a)<10){
+//		printf(" RIGHT BUBBLE RAN ");
+//		printf (" RIGHT SIDE a is %d and c is %d ", right.a,right.c);
 		bubble(&right);
 	}
 	//if list is larger than 10 run create the new task
-	else{
+	else if (pivotindex != p_array.c){
 		qsort_task_parameters_t right_task;
 		right_task.interval = right;
 		right_task.priority = priority + 1;
@@ -179,5 +189,6 @@ void quicksort( array_t array ) {
 	task_param.priority = 10;
 	
 	//start the quick_sort threading
+	
 	os_tsk_create_ex( quick_sort_task, task_param.priority, &task_param ); 
 }
