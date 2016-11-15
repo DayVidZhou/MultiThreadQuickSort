@@ -137,10 +137,12 @@ __task void quick_sort_task( void* void_ptr){
 	left.array.array = p_array.array.array;
 	left.a = 0;
 	left.c = pivotindex -1;
+	left.array.length = left.c - left.a + 1;
 	//setting right
 	right.array.array = p_array.array.array;
 	right.a = pivotindex +1;
 	right.c = p_array.c;
+	right.array.length = right.c - right.a + 1;
 	
 	//run bubble if list is under a certain size
 	if (pivotindex != 0 && (left.c - left.a)<10){
