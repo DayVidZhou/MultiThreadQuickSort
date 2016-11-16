@@ -47,7 +47,9 @@ __task void base_task( void ) {
 
 		if( is_sorted_array( &array ) )
 			printf("The array is sucessfully sorted in %.1f us.\n", time);
-		//else
+		else{
+			printf("The array took %.1f us to run doe.\n", time);
+		}
 		//	printf("The array is not sorted!\n");
 
 		#ifdef PRINT_ARRAY

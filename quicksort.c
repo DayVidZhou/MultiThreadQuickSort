@@ -69,48 +69,20 @@ int partition(array_interval_t* interval){
 }
 
 
-void bubble( array_interval_t* interval ) {
-   int temp;
-   int i,j,k;
-	 bool swapped = false;
-   
-   // loop through all numbers 
-   for(i = interval->a; i < interval->c; i++) { 
-      swapped = false;
-		
-      // loop through numbers falling ahead 
-      for(j = interval->a; j < interval->c-i; j++) {
-        // printf("     Items compared: [ %d, %d ] ", interval->array.array[j],interval->array.array[j+1]);
-
-         // check if next number is lesser than current no
-         //   swap the numbers. 
-         //  (Bubble up the highest number)
-			
-         if(interval->array.array[j] > interval->array.array[j+1]) {
-            temp = interval->array.array[j];
-            interval->array.array[j] = interval->array.array[j+1];
-            interval->array.array[j+1] = temp;
-
-            swapped = true;
-           // printf(" => swapped [%d, %d]\n",interval->array.array[j],interval->array.array[j+1]);
-         }else {
-           // printf(" => not swapped\n");
-         }
-			
-      }
-
-      // if no number was swapped that means 
-      //   array is sorted now, break the loop. 
-// 			printf("SOLVED Array is ");
-// 			for (k = interval->a; i <= interval->c; i++){
-// 				printf("%d , ",interval->array.array[i]);
-// 			}
-// 			printf("\n");
-      if(!swapped) {
-         break;
-      }  
-    //  printf("Iteration %d#: ",(i+1)); 
-   }
+void insertion( array_interval_t* interval ) {
+	size_t i, j, c = interval->c; // Save it to a varible to avoid repeated checking
+	array_type temp;
+	array_type* arr = interval->array.array;
+	
+	for (i = interval->a; i<=c; i++){
+		temp = arr[i];
+		j = i;
+		while(j>0 && arr[j-1] > temp ){
+			arr[j] = arr[j-1];
+			j--;
+		}
+		arr[j] = temp;
+	}
 }
 
 __task void quick_sort_task( void* void_ptr){
@@ -133,6 +105,9 @@ __task void quick_sort_task( void* void_ptr){
 // 	}
 // 	printf("\n");
 	
+	//CHECKING BASE CASE
+	if (p_array.a < p_array.c){
+		
 	//setting left
 	left.array.array = p_array.array.array;
 	left.a = 0;
@@ -144,11 +119,11 @@ __task void quick_sort_task( void* void_ptr){
 	right.c = p_array.c;
 	right.array.length = right.c - right.a + 1;
 	
-	//run bubble if list is under a certain size
+	//run insertion if list is under a certain size
 	if (pivotindex != 0 && (left.c - left.a)<10){
-	//	printf (" LEFT BUBBLE RAN ");
+	//	printf (" LEFT insertion RAN ");
 	//	printf (" LEFT SIDE a is %d and c is %d ", left.a,left.c);
-		bubble(&left);
+		insertion(&left);
 	}
 	//if list is larger than 10 run create the new task
 	else if (pivotindex != 0){
@@ -158,11 +133,11 @@ __task void quick_sort_task( void* void_ptr){
 		os_tsk_create_ex( quick_sort_task, left_task.priority, &left_task );
 	}
 	
-	//run bubble if list is under a certain size
+	//run insertion if list is under a certain size
 	if (pivotindex != p_array.c &&(right.c - right.a)<10){
-//		printf(" RIGHT BUBBLE RAN ");
+//		printf(" RIGHT insertion RAN ");
 //		printf (" RIGHT SIDE a is %d and c is %d ", right.a,right.c);
-		bubble(&right);
+		insertion(&right);
 	}
 	//if list is larger than 10 run create the new task
 	else if (pivotindex != p_array.c){
@@ -171,7 +146,8 @@ __task void quick_sort_task( void* void_ptr){
 		right_task.priority = priority + 1;
 		os_tsk_create_ex( quick_sort_task, right_task.priority, &right_task );
 	}
-	
+}
+	free(task_param);
 	os_tsk_delete_self();
 }
 

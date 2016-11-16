@@ -24,7 +24,7 @@
 //   <i> Define max. number of tasks that will run at the same time.
 //   <i> Default: 6
 #ifndef OS_TASKCNT
- #define OS_TASKCNT     31
+ #define OS_TASKCNT     40
 #endif
 
 //   <o>Number of tasks with user-provided stack <0-250>
