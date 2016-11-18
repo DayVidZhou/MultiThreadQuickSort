@@ -16,7 +16,7 @@ array_t generate_random_array( void ) {
   array_type max_u;
   array_t result;
 
-  if( ( LARGE_ARRAY * sizeof(array_type) )  > ( 1 << 14 ) ){
+  if( ( LARGE_ARRAY * sizeof(array_type) )  > ( 1 << 12 ) ){
     result.length = 0;
     result.array = 0;
     printf( "The array size is too large.\n" );

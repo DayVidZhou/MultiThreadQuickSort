@@ -130,7 +130,9 @@ __task void quick_sort_task( void* void_ptr){
 		qsort_task_parameters_t left_task;
 		left_task.interval = left;
 		left_task.priority = priority + 1;
-		os_tsk_create_ex( quick_sort_task, left_task.priority, &left_task );
+		if (!os_tsk_create_ex( quick_sort_task, left_task.priority, &left_task )){
+			insertion(&left_task.interval);
+		}	
 	}
 	
 	//run insertion if list is under a certain size
@@ -144,7 +146,9 @@ __task void quick_sort_task( void* void_ptr){
 		qsort_task_parameters_t right_task;
 		right_task.interval = right;
 		right_task.priority = priority + 1;
-		os_tsk_create_ex( quick_sort_task, right_task.priority, &right_task );
+		if (!os_tsk_create_ex( quick_sort_task, right_task.priority, &right_task )){
+			insertion(&right_task.interval);
+		}	
 	}
 }
 	free(task_param);
